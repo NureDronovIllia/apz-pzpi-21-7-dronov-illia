@@ -8,7 +8,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from app.core.database import DATABASE_URL, Base
-from app.models.db.users import Roles, User
+from app.models import *
 
 load_dotenv(".env")
 

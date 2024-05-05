@@ -4,7 +4,6 @@ from fastapi import HTTPException, status
 from pydantic import BaseModel
 
 from app.config.logs.logger import logger
-from app.models.db.users import Roles
 from app.repository.base import BaseRepository
 from app.repository.user import UserRepository
 from app.utilities.formatters.http_error import error_wrapper
@@ -35,9 +34,9 @@ class BaseService:
         self,
         user_repository: UserRepository,
         user_id: int,
-        role: Optional[Roles] = None,
+        # role: Optional[Roles] = None,
         raise_exception: bool = True,
     ) -> None:
         user = await user_repository.get_user_by_id(user_id)
-        if user.role != role:
-            raise HTTPException(status.HTTP_403_FORBIDDEN, detail="Forbidden")
+        # if user.role != role:
+        #     raise HTTPException(status.HTTP_403_FORBIDDEN, detail="Forbidden")

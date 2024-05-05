@@ -10,7 +10,6 @@ from app.securities.authorization.auth_handler import auth_handler
 
 async def auth_wrapper(
     auth: HTTPAuthorizationCredentials = Security(HTTPBearer(auto_error=False)),
-    user_repository=Depends(get_repository(UserRepository)),
 ) -> Optional[dict[str, Any]]:
     if not auth:
         raise HTTPException(

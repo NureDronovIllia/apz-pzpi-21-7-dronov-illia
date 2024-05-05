@@ -4,7 +4,7 @@ from fastapi import Depends
 
 from app.api.dependencies.auth import auth_wrapper
 from app.api.dependencies.repository import get_repository
-from app.models.db.users import User
+from app.models.db.user import User
 from app.repository.user import UserRepository
 
 
