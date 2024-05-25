@@ -8,8 +8,6 @@ services:
       sh -c "alembic upgrade head &&
             uvicorn app.main:app --reload --host '0.0.0.0' --ssl-keyfile ./localhost-key.pem --ssl-certfile ./localhost.pem"
     volumes:
-      # - /home/user/Desktop/code/university/apz-pzpi-21-7-dronov-illia/Task2/apz-pzpi-21-7-dronov-illia-task2/app:/code/app
-      # - /home/user/Desktop/code/university/apz-pzpi-21-7-dronov-illia/Task2/apz-pzpi-21-7-dronov-illia-task2/migrations:/code/migrations
       - ./app:/code/app
       - ./migrations:/code/migrations
     ports:

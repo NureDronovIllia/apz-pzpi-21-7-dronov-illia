@@ -1,17 +1,24 @@
 from datetime import datetime
+from typing import Literal, Optional
 
 from pydantic import BaseModel, EmailStr, field_validator
 
+from app.models.db.user import UserRoles
 from app.utilities.validators.payload.datetime import validate_date_format
-from app.utilities.validators.payload.user import validate_name, validate_phone_number
+from app.utilities.validators.payload.user import (
+    validate_name,
+    validate_passport_number,
+    validate_password,
+)
 
 
 class UserBase(BaseModel):
     first_name: str
     last_name: str
     birth_date: str
+    gender: Literal["male", "female"]
     email: EmailStr
-    phone_number: str
+    passport_number: str
 
     @field_validator("first_name")
     @classmethod
@@ -28,7 +35,40 @@ class UserBase(BaseModel):
     def validate_birth_date(cls, value):
         return validate_date_format(value, "birth_date")
 
-    @field_validator("phone_number")
+    @field_validator("passport_number")
     @classmethod
-    def validate_user_phone_number(cls, value):
-        return validate_phone_number(value)
+    def validate_passport_number(cls, value):
+        return validate_passport_number(value)
+
+
+class UserRegister(UserBase):
+    role: UserRoles
+    password: str
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value):
+        return validate_password(value)
+
+
+class UserUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    birth_date: Optional[str] = None
+    gender: Optional[Literal["male", "female"]] = None
+    email: Optional[EmailStr] = None
+    passport_number: Optional[str] = None
+
+
+class UserData(UserBase):
+    id: int
+    role: str
+
+
+class UserLoginInput(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class UserLoginOutput(BaseModel):
+    token: str
