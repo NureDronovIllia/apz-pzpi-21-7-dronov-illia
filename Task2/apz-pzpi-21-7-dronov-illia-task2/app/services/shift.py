@@ -1,3 +1,4 @@
+from app.repository.shift import ShiftRepository
 from app.services.base import BaseService
 
 

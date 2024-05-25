@@ -1,6 +1,6 @@
-from app.repository.base import BaseRepository
 from app.models.db.fuel import FuelSupplier
+from app.repository.base import BaseRepository
 
 
-class FuelRepository(BaseRepository):
+class FuelSupplierRepository(BaseRepository):
     model = FuelSupplier

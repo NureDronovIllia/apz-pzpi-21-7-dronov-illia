@@ -46,7 +46,7 @@ async def update_user(
     return await user_service.delete_user(user_id, current_user)
 
 
-#TODO implement
+# TODO implement
 @router.patch("/forgot-password/", response_model=None)
 async def forgot_password(
     data: None,
@@ -56,7 +56,7 @@ async def forgot_password(
     return await user_service.handle_forgot_password(current_user, data)
 
 
-#TODO implement
+# TODO implement
 @router.patch("/change-password/", response_model=None)
 async def change_password(
     data: None,

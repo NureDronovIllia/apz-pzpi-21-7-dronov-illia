@@ -2,11 +2,10 @@ from fastapi import APIRouter
 
 from app.api.routes.admin import router as admin_router
 from app.api.routes.auth import router as auth_router
+from app.api.routes.fuel import router as fuel_router
+from app.api.routes.shift import router as shift_router
 from app.api.routes.user import router as user_router
 from app.api.routes.vehicle import router as vehicle_router
-from app.api.routes.shift import router as shift_router
-from app.api.routes.fuel import router as fuel_router
-
 
 router = APIRouter()
 
