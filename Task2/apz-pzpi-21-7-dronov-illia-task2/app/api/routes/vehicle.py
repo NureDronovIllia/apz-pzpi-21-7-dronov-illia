@@ -3,10 +3,17 @@ from fastapi import APIRouter, Depends
 from app.api.dependencies.services import get_vehicle_service
 from app.api.dependencies.user import get_current_user
 from app.models.db.user import User
-from app.models.schemas.vehicle import SetStatus, VehicleBase, VehicleData, VehicleUpdate
-from app.services.vehicle import VehicleService
 from app.models.db.vehicle import VehicleStatuses
-
+from app.models.schemas.vehicle import (
+    InspectionBase,
+    InspectionData,
+    InspectionUpdate,
+    SetStatus,
+    VehicleBase,
+    VehicleData,
+    VehicleUpdate,
+)
+from app.services.vehicle import VehicleService
 
 router = APIRouter(prefix="/vehicles", tags=["Vehicles"])
 
@@ -62,30 +69,31 @@ async def delete_vehicle(
     return await vehicle_service.delete_vehicle(vehicle_id, current_user)
 
 
-# TODO flow
-@router.get("/inspections/", response_model=None)
+# TODO filtration
+@router.get("/inspections/", response_model=list[InspectionData])
 async def get_inspections(
     current_user: User = Depends(get_current_user),
     vehicle_service: VehicleService = Depends(get_vehicle_service),
-) -> None:
+) -> list[InspectionData]:
     return await vehicle_service.get_inspections(current_user)
 
 
-# TODO flow
-@router.post("/inspections/start/", response_model=None)
+# TODO validations
+@router.post("/inspections/start/", response_model=InspectionData)
 async def start_inspection(
-    vehicle_id: int,
+    data: InspectionBase,
     current_user: User = Depends(get_current_user),
     vehicle_service: VehicleService = Depends(get_vehicle_service),
-) -> None:
-    return await vehicle_service.start_inspection(vehicle_id, current_user)
+) -> InspectionData:
+    return await vehicle_service.start_inspection(data, current_user)
 
 
-# TODO flow
-@router.post("/inspections/{inspection_id}/end/", response_model=None)
+# TODO validations
+@router.post("/inspections/{inspection_id}/end/", response_model=InspectionData)
 async def end_inspection(
     inspection_id: int,
+    data: InspectionUpdate,
     current_user: User = Depends(get_current_user),
     vehicle_service: VehicleService = Depends(get_vehicle_service),
-) -> None:
-    return await vehicle_service.end_inspection(inspection_id, current_user)
+) -> InspectionData:
+    return await vehicle_service.end_inspection(inspection_id, data, current_user)

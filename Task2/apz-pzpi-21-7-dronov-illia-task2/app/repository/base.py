@@ -18,8 +18,8 @@ class BaseRepository:
     def unpack(self, collection: Iterable) -> list:
         return list(chain.from_iterable(collection))
 
-    async def create(self, model_data: Type[BaseModel]) -> Type[Base]:
-        new_instance = self.model(**model_data.model_dump())
+    async def create(self, model_data: Type[BaseModel], *args, **kwargs) -> Type[Base]:
+        new_instance = self.model(**model_data.model_dump(), **kwargs)
         self.async_session.add(new_instance)
 
         await self.async_session.commit()

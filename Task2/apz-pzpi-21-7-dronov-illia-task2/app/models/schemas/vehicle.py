@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Annotated, Optional
 
 from annotated_types import Ge, Gt, Le
@@ -20,11 +21,31 @@ class VehicleData(VehicleBase):
     id: int
     current_status: Optional[str]
 
+
 class SetStatus(BaseModel):
     status: VehicleStatuses
+
 
 class VehicleUpdate(BaseModel):
     current_fuel_lvl: Optional[Annotated[float, Ge(0)]] = None
     current_lng: Optional[Annotated[float, Ge(-180), Le(180)]] = None
     current_lat: Optional[Annotated[float, Ge(-90), Le(90)]] = None
 
+
+class InspectionBase(BaseModel):
+    vehicle_id: int
+    reason: str
+
+
+class InspectionData(InspectionBase):
+    id: int
+    conclusion: Optional[str] = None
+    user_id: int
+    start_time: datetime
+    end_time: Optional[datetime] = None
+
+
+class InspectionUpdate(BaseModel):
+    conclusion: Optional[str] = None
+    reason: Optional[str] = None
+    end_time: Optional[datetime] = None

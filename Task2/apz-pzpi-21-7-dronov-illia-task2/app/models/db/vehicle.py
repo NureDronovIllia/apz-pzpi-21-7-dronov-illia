@@ -68,6 +68,6 @@ class Inspection(Base):
     )
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     reason: Mapped[str]
-    conclusion: Mapped[str]
+    conclusion: Mapped[str] = mapped_column(nullable=True)
     start_time: Mapped[datetime] = mapped_column(default=func.now())
     end_time: Mapped[datetime] = mapped_column(nullable=True)

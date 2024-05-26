@@ -3,8 +3,8 @@ from typing import Any, Optional
 from sqlalchemy import select
 
 from app.models.db.vehicle import Status, Vehicle, VehicleStatuses
-from app.repository.base import BaseRepository
 from app.models.schemas.vehicle import SetStatus
+from app.repository.base import BaseRepository
 
 
 class VehicleRepository(BaseRepository):
@@ -23,11 +23,12 @@ class VehicleRepository(BaseRepository):
         )
         return await self.get_instance(query)
 
-    async def set_current_status(self, vehicle_id: int, status: VehicleStatuses) -> None:
+    async def set_current_status(
+        self, vehicle_id: int, status: VehicleStatuses
+    ) -> None:
         new_status = Status(vehicle_id=vehicle_id, status=status)
         self.async_session.add(new_status)
         await self.async_session.commit()
-        
 
     async def create_vehicle(self, vehicle_data) -> dict[str, Any]:
         new_vehicle: Vehicle = await self.create(vehicle_data)
