@@ -25,7 +25,6 @@ def validate_name(value: str, field_name: str):
     if value is None:
         return value
     if not (2 <= len(value) <= 25):
-        logger.warning("Validation error: 'name' has invalid length")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=error_wrapper(
@@ -34,10 +33,11 @@ def validate_name(value: str, field_name: str):
         )
 
     if not regex.fullmatch(r"\p{L}+", value):
-        logger.warning("Validation error: 'name' field contains restricted characters")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error_wrapper("Name should contain only letters", "name"),
+            detail=error_wrapper(
+                f"{field_name} should contain only letters", field_name
+            ),
         )
     return value
 

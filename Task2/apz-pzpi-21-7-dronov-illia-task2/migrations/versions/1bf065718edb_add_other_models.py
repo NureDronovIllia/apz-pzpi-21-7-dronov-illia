@@ -77,7 +77,7 @@ def upgrade() -> None:
     op.create_table('statuses',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('vehicle_id', sa.Integer(), nullable=False),
-    sa.Column('status', sa.Enum('SHIFT', 'INSPECTION', 'FUEL', name='vehiclestatuses', create_constraint=True), nullable=False),
+    sa.Column('status', sa.Enum('SHIFT', 'INSPECTION', 'FUEL', 'OFF_SHIFT', name='vehiclestatuses', create_constraint=True), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['vehicle_id'], ['vehicles.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')

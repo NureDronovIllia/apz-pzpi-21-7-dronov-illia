@@ -16,4 +16,4 @@ class Shift(Base):
         ForeignKey("vehicles.id", ondelete="CASCADE")
     )
     start_time: Mapped[datetime] = mapped_column(default=func.now())
-    end_time: Mapped[datetime]
+    end_time: Mapped[datetime] = mapped_column(nullable=True)

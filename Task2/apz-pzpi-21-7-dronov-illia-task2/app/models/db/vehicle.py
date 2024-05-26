@@ -19,6 +19,7 @@ class VehicleStatuses(enum.Enum):
     SHIFT = "On the shift"
     INSPECTION = "At the inspection"
     FUEL = "On the refuel"
+    OFF_SHIFT = "Off shift"
 
 
 class Vehicle(Base):
@@ -34,7 +35,8 @@ class Vehicle(Base):
         )
     )
     title: Mapped[str] = mapped_column(String(50))
-    fuel_level: Mapped[float]
+    current_fuel_lvl: Mapped[float] = mapped_column(default=0)
+    max_fuel_lvl: Mapped[float]
     current_lng: Mapped[float]
     current_lat: Mapped[float]
 
@@ -65,5 +67,7 @@ class Inspection(Base):
         ForeignKey("vehicles.id", ondelete="CASCADE")
     )
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    reason: Mapped[str]
     conclusion: Mapped[str]
-    created_at: Mapped[datetime] = mapped_column(default=func.now())
+    start_time: Mapped[datetime] = mapped_column(default=func.now())
+    end_time: Mapped[datetime] = mapped_column(nullable=True)
