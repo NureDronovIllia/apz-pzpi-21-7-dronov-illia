@@ -3,13 +3,12 @@ from fastapi import APIRouter, Depends
 from app.api.dependencies.services import get_user_service
 from app.api.dependencies.user import get_current_user
 from app.models.db.user import User
-from app.models.schemas.users import UserData, UserRegister, UserUpdate
+from app.models.schemas.users import PasswordChangeInput, PasswordChangeOutput, UserData, UserRegister, UserUpdate
 from app.services.user import UserService
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-# TODO фильтрация
 @router.get("/", response_model=list[UserData])
 async def get_users(
     current_user: User = Depends(get_current_user),
@@ -46,11 +45,10 @@ async def update_user(
     return await user_service.delete_user(user_id, current_user)
 
 
-# TODO implement
-@router.patch("/change-password/", response_model=None)
+@router.patch("/change-password/", response_model=PasswordChangeOutput)
 async def change_password(
-    data: None,
+    data: PasswordChangeInput,
     current_user: User = Depends(get_current_user),
     user_service: UserService = Depends(get_user_service),
 ) -> None:
-    return await user_service.handle_change_password(current_user, data)
+    return await user_service.change_password(current_user, data)

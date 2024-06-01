@@ -72,3 +72,19 @@ class UserLoginInput(BaseModel):
 
 class UserLoginOutput(BaseModel):
     token: str
+
+class NewPasswordInput(BaseModel):
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def validate(cls, value: str):
+        return validate_password(value)
+
+
+class PasswordChangeInput(NewPasswordInput):
+    old_password: str
+
+
+class PasswordChangeOutput(BaseModel):
+    message: str

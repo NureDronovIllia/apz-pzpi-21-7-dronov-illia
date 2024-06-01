@@ -17,7 +17,7 @@ async def get_shifts(
     return await shift_service.get_shifts(current_user)
 
 
-@router.post("/start", response_model=ShiftData, status_code=201)
+@router.post("/start/", response_model=ShiftData, status_code=201)
 async def start_shift(
     data: ShiftBase,
     current_user: User = Depends(get_current_user),

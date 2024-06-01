@@ -44,7 +44,6 @@ async def update_supplier(
     return await fuel_service.update_supplier(data, supplier_id, current_user)
 
 
-# TODO
 @router.delete("/suppliers/{supplier_id}/delete/", response_model=None, status_code=204)
 async def delete_supplier(
     supplier_id: int,

@@ -5,6 +5,8 @@ from sqlalchemy.exc import IntegrityError
 
 from app.models.db.user import User, UserRoles
 from app.models.schemas.users import (
+    PasswordChangeInput,
+    PasswordChangeOutput,
     UserData,
     UserLoginInput,
     UserLoginOutput,
@@ -94,6 +96,28 @@ class UserService(BaseService):
             )
 
         await self.user_repository.delete_user(user_id)
+
+    async def change_password(
+        self, current_user: User, data: PasswordChangeInput
+    ) -> PasswordChangeOutput:
+
+        # Validate the old password match the current one
+        if not auth_handler.verify_password(data.old_password, current_user.password):
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                detail=error_wrapper("Invalid old password", "old_password"),
+            )
+
+        # Validate the new password does not match the old password
+        if auth_handler.verify_password(data.new_password, current_user.password):
+            raise HTTPException(
+                status.HTTP_409_CONFLICT, detail="You can't use your old password"
+            )
+
+        current_user.password = auth_handler.get_password_hash(data.new_password)
+        await self.user_repository.save(current_user)
+        
+        return PasswordChangeOutput(message="The password was successfully reset")
 
     async def export_data_xlsx(self, current_user_id: int):
         await self._validate_user_permissions(self.user_repository, current_user_id)

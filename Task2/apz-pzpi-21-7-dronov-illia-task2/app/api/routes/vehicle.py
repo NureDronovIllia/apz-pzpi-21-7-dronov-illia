@@ -17,7 +17,6 @@ from app.services.vehicle import VehicleService
 router = APIRouter(prefix="/vehicles", tags=["Vehicles"])
 
 
-# TODO filtration
 @router.get("/", response_model=list[VehicleData])
 async def get_vehicles(
     current_user: User = Depends(get_current_user),
@@ -26,7 +25,6 @@ async def get_vehicles(
     return await vehicle_service.get_vehicles(current_user)
 
 
-# TODO data validation
 @router.post("/{vehicle_id}/set_current_status/", response_model=None, status_code=201)
 async def set_current_status(
     vehicle_id: int,
@@ -37,7 +35,6 @@ async def set_current_status(
     return await vehicle_service.set_current_status(vehicle_id, status, current_user)
 
 
-# TODO data validation
 @router.post("/create/", response_model=VehicleData, status_code=201)
 async def create_vehicle(
     data: VehicleBase,
@@ -47,7 +44,6 @@ async def create_vehicle(
     return await vehicle_service.create_vehicle(data, current_user)
 
 
-# TODO data validation
 @router.patch("/{vehicle_id}/update/", response_model=VehicleData)
 async def update_vehicle(
     vehicle_id: int,
@@ -58,7 +54,6 @@ async def update_vehicle(
     return await vehicle_service.update_vehicle(vehicle_id, data, current_user)
 
 
-# TODO flow
 @router.delete("/{vehicle_id}/delete/", response_model=None, status_code=204)
 async def delete_vehicle(
     vehicle_id: int,
@@ -68,7 +63,6 @@ async def delete_vehicle(
     return await vehicle_service.delete_vehicle(vehicle_id, current_user)
 
 
-# TODO filtration
 @router.get("/inspections/", response_model=list[InspectionData])
 async def get_inspections(
     current_user: User = Depends(get_current_user),
@@ -77,7 +71,6 @@ async def get_inspections(
     return await vehicle_service.get_inspections(current_user)
 
 
-# TODO validations
 @router.post("/inspections/start/", response_model=InspectionData)
 async def start_inspection(
     data: InspectionBase,
@@ -87,7 +80,6 @@ async def start_inspection(
     return await vehicle_service.start_inspection(data, current_user)
 
 
-# TODO validations
 @router.post("/inspections/{inspection_id}/end/", response_model=InspectionData)
 async def end_inspection(
     inspection_id: int,
