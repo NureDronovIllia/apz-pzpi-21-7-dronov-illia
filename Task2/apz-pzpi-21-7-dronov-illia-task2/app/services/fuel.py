@@ -1,3 +1,6 @@
+from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
+
 from app.models.db.fuel import FuelStorage, FuelSupplier, Purchase
 from app.models.db.user import User
 from app.models.schemas.fuel import (
@@ -16,6 +19,7 @@ from app.repository.fuel_supplier import FuelSupplierRepository
 from app.repository.purchase import PurchaseRepository
 from app.repository.user import UserRepository
 from app.services.base import BaseService
+from app.utilities.formatters.http_error import error_wrapper
 
 
 class FuelService(BaseService):
@@ -42,10 +46,17 @@ class FuelService(BaseService):
     ) -> SupplierData:
         await self._validate_user_permissions(self.user_repository, current_user.id)
 
-        new_supplier: FuelSupplier = (
-            await self.fuel_supplier_repository.create_fuel_supplier(data)
-        )
-        return SupplierData(**new_supplier.__dict__)
+        try:
+            new_supplier: FuelSupplier = (
+                await self.fuel_supplier_repository.create_fuel_supplier(data)
+            )
+            return SupplierData(**new_supplier.__dict__)
+        except IntegrityError:
+            raise HTTPException(
+                status.HTTP_409_CONFLICT,
+                detail=error_wrapper("Fuel supplier with this title already exists", "title"),
+            )
+
     
     async def update_supplier(
         self, supplier_id: int, data: SupplierUpdate, current_user: User
@@ -53,18 +64,22 @@ class FuelService(BaseService):
         await self._validate_user_permissions(self.user_repository, current_user.id)
         await self._validate_instance_exists(self.fuel_supplier_repository, supplier_id)
 
-        updated_supplier: FuelSupplier = await self.fuel_supplier_repository.update_fuel_supplier(
-            supplier_id, data
-        )
-        return SupplierData(**updated_supplier.__dict__)
+        try:
+            updated_supplier: FuelSupplier = await self.fuel_supplier_repository.update_fuel_supplier(
+                supplier_id, data
+            )
+            return SupplierData(**updated_supplier.__dict__)
+        except IntegrityError:
+            raise HTTPException(
+                status.HTTP_409_CONFLICT,
+                detail=error_wrapper("Fuel supplier with this title already exists", "title"),
+            )
     
     async def delete_supplier(self, supplier_id: int, current_user: User) -> None:
         await self._validate_user_permissions(self.user_repository, current_user.id)
         await self._validate_instance_exists(self.fuel_supplier_repository, supplier_id)
 
         await self.fuel_supplier_repository.delete_fuel_supplier(supplier_id)
-
-    #########
 
     async def get_storages(self, current_user: User) -> list[StorageData]:
         await self._validate_user_permissions(self.user_repository, current_user.id)
@@ -99,8 +114,6 @@ class FuelService(BaseService):
 
         await self.fuel_storage_repository.delete_fuel_storage(storage_id)
 
-    #########
-
     async def get_purchases(self, current_user: User) -> list[PurchaseData]:
         await self._validate_user_permissions(self.user_repository, current_user.id)
 
@@ -116,5 +129,3 @@ class FuelService(BaseService):
             PurchaseCreate(**data, user_id=current_user.id)
         )
         return PurchaseData(**new_purchase.__dict__)
-
-    #########

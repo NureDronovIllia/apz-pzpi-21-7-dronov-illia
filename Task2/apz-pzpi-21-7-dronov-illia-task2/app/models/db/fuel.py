@@ -35,7 +35,7 @@ class FuelSupplier(Base):
     __tablename__ = "fuel_suppliers"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    title: Mapped[str]
+    title: Mapped[str] = mapped_column(unique=True)
     price: Mapped[float]
     fuel_type: Mapped[FuelTypes] = mapped_column(
         Enum(
