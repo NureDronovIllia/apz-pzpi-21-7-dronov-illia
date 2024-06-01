@@ -35,8 +35,9 @@ def get_vehicle_service(
 def get_shift_service(
     user_repository: UserRepository = Depends(get_repository(UserRepository)),
     shift_repository: ShiftRepository = Depends(get_repository(ShiftRepository)),
+    vehicle_repository: VehicleRepository = Depends(get_repository(VehicleRepository)),
 ) -> ShiftService:
-    service = ShiftService(user_repository, shift_repository)
+    service = ShiftService(user_repository, shift_repository, vehicle_repository)
     return service
 
 

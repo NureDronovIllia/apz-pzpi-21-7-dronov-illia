@@ -36,8 +36,8 @@ class VehicleRepository(BaseRepository):
         return new_vehicle
 
     async def update_vehicle(self, vehicle_id: int, vehicle_data) -> Vehicle:
-        updated_user = await self.update(vehicle_id, vehicle_data)
-        return updated_user
+        updated_shift = await self.update(vehicle_id, vehicle_data)
+        return updated_shift
 
     async def delete_vehicle(self, user_id: int) -> Optional[int]:
         result = await self.delete(user_id)

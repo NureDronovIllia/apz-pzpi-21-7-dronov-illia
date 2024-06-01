@@ -93,6 +93,8 @@ class VehicleService(BaseService):
         inspection: Inspection = await self.inspection_repository.create_inspection(
             data, user_id=current_user.id
         )
+
+        await self.vehicle_repository.set_current_status(data.vehicle_id, VehicleStatuses.INSPECTION)
         return InspectionData(**inspection.__dict__)
 
     async def end_inspection(
@@ -103,4 +105,6 @@ class VehicleService(BaseService):
         updated_inspection: Inspection = (
             await self.inspection_repository.update_inspection(inspection_id, data)
         )
+        await self.vehicle_repository.set_current_status(data.vehicle_id, VehicleStatuses.OFF_SHIFT)
+
         return InspectionData(**updated_inspection.__dict__)

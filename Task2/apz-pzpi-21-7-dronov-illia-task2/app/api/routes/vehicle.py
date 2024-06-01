@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends
 from app.api.dependencies.services import get_vehicle_service
 from app.api.dependencies.user import get_current_user
 from app.models.db.user import User
-from app.models.db.vehicle import VehicleStatuses
 from app.models.schemas.vehicle import (
     InspectionBase,
     InspectionData,
