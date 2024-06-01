@@ -1,5 +1,7 @@
 from typing import Any, Optional
+
 from sqlalchemy import select
+
 from app.models.db.fuel import Purchase
 from app.repository.base import BaseRepository
 

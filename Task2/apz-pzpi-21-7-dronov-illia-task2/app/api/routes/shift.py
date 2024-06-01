@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends
 from app.api.dependencies.services import get_shift_service
 from app.api.dependencies.user import get_current_user
 from app.models.db.user import User
-from app.services.shift import ShiftService
 from app.models.schemas.shift import ShiftBase, ShiftData
+from app.services.shift import ShiftService
 
 router = APIRouter(prefix="/shifts", tags=["Shifts"])
 
@@ -15,7 +15,6 @@ async def get_shifts(
     shift_service: ShiftService = Depends(get_shift_service),
 ) -> list[ShiftData]:
     return await shift_service.get_shifts(current_user)
-    
 
 
 @router.post("/start", response_model=ShiftData, status_code=201)

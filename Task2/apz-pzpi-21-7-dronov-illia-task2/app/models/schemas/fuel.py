@@ -1,4 +1,5 @@
 from typing import Optional
+
 from pydantic import BaseModel
 
 from app.models.db.fuel import FuelTypes
@@ -17,18 +18,18 @@ class SupplierData(SupplierBase):
 class SupplierUpdate(BaseModel):
     title: Optional[str] = None
     price: Optional[float] = None
-    fuel_type: Optional[FuelTypes]  = None
+    fuel_type: Optional[FuelTypes] = None
 
 
 class StorageBase(BaseModel):
     max_amount: int
-    current_amount: float
     critical_amount: float
     fuel_type: FuelTypes
 
 
-class StorageData(SupplierBase):
+class StorageData(StorageBase):
     id: int
+    current_amount: float
 
 
 class StorageUpdate(BaseModel):
@@ -50,4 +51,3 @@ class PurchaseCreate(PurchaseBase):
 
 class PurchaseData(SupplierBase):
     id: int
-

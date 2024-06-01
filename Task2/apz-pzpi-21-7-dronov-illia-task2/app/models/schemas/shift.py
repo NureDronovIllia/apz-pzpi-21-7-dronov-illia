@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -10,7 +11,7 @@ class ShiftBase(BaseModel):
 class ShiftData(ShiftBase):
     id: int
     user_id: int
-    vehicle_id: int 
+    vehicle_id: int
     start_time: datetime
     end_time: Optional[datetime] = None
 

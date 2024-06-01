@@ -19,7 +19,7 @@ class FuelStorage(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     max_amount: Mapped[int]
-    current_amount: Mapped[float]
+    current_amount: Mapped[float] = mapped_column(default=0)
     critical_amount: Mapped[float]
     fuel_type: Mapped[FuelTypes] = mapped_column(
         Enum(
