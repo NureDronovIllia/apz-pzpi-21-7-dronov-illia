@@ -5,8 +5,10 @@ import xlsxwriter
 from pydantic import EmailStr
 from sqlalchemy import inspect, select
 
-from app.config.logs.logger import logger
 from app.models.db.user import User
+from app.models.db.fuel import FuelStorage, FuelSupplier, Purchase
+from app.models.db.shift import Shift
+from app.models.db.vehicle import Vehicle, Status, Inspection
 from app.repository.base import BaseRepository
 
 
@@ -51,6 +53,13 @@ class UserRepository(BaseRepository):
     async def export_data_xlsx(self):
         models: list = [
             User,
+            FuelStorage,
+            FuelSupplier,
+            Purchase,
+            Shift,
+            Vehicle,
+            Status,
+            Inspection,
         ]
         workbook = xlsxwriter.Workbook(Path("export.xlsx").absolute())
 

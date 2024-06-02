@@ -151,4 +151,5 @@ class FuelService(BaseService):
         new_purchase: Purchase = await self.purchase_repository.create_purchase(
             PurchaseCreate(**data.model_dump(), user_id=current_user.id)
         )
+        print(new_purchase)
         return PurchaseData(**new_purchase.__dict__)

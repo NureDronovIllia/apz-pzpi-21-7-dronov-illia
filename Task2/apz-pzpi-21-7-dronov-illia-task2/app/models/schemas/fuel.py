@@ -49,5 +49,5 @@ class PurchaseCreate(PurchaseBase):
     user_id: int
 
 
-class PurchaseData(SupplierBase):
+class PurchaseData(PurchaseBase):
     id: int
