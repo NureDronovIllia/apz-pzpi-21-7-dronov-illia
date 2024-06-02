@@ -23,6 +23,14 @@ async def get_users(
     return await user_service.get_users(current_user)
 
 
+@router.get("/profile/", response_model=UserData)
+async def get_profile(
+    current_user: User = Depends(get_current_user),
+    user_service: UserService = Depends(get_user_service),
+) -> list[UserData]:
+    return await user_service.get_profile(current_user)
+
+
 @router.post("/register_user/", response_model=UserData, status_code=201)
 async def register_user(
     user_data: UserRegister,

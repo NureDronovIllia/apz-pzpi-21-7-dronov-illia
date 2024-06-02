@@ -23,6 +23,9 @@ class UserService(BaseService):
     def __init__(self, user_repository) -> None:
         self.user_repository: UserRepository = user_repository
 
+    async def get_profile(self, current_user) -> UserData:
+        return UserData(**current_user.__dict__)
+
     async def register_user(
         self, user_data: UserRegister, current_user: User
     ) -> UserData:

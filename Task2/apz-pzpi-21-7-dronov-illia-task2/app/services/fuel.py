@@ -130,6 +130,17 @@ class FuelService(BaseService):
     ) -> PurchaseData:
         await self._validate_user_permissions(self.user_repository, current_user.id)
 
+        fuel_storage: FuelStorage = await self.fuel_storage_repository.get_fuel_storage(
+            data.fuel_storage_id
+        )
+
+        allowed_amount: float = fuel_storage.max_amount - fuel_storage.current_amount
+        if data.amount > allowed_amount:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                f"You can't put that much fuel in. Maximum permissible value is {allowed_amount}",
+            )
+
         new_purchase: Purchase = await self.purchase_repository.create_purchase(
             PurchaseCreate(**data, user_id=current_user.id)
         )

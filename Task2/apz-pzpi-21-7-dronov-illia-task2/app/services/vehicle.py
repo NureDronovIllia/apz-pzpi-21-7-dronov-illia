@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 
 from app.models.db.shift import Shift
 from app.models.db.user import User, UserRoles
-from app.models.db.vehicle import Inspection, Vehicle, VehicleStatuses, VehicleTypes
+from app.models.db.vehicle import Inspection, Vehicle, VehicleStatuses
 from app.models.schemas.vehicle import (
     InspectionBase,
     InspectionData,
@@ -40,10 +40,12 @@ class VehicleService(BaseService):
             await self.vehicle_repository.get_current_status(vehicle.id)
             for vehicle in vehicles
         ]
+
+        # Unpack main vehicle object and add a status field
         return [
             VehicleData(
                 **vehicle.__dict__,
-                current_status=VehicleStatuses(status) if status else None
+                current_status=VehicleStatuses(status) if status else None,
             )
             for vehicle, status in zip(vehicles, current_statuses)
         ]
@@ -54,7 +56,9 @@ class VehicleService(BaseService):
         vehicles: list[Vehicle] = await self.vehicle_repository.get_vehicles()
         return await self._get_vehicles_with_status(vehicles)
 
-    async def refuel_vehicle(self, vehicle_id: int, data: RefuelData, current_user: User) -> None:
+    async def refuel_vehicle(
+        self, vehicle_id: int, data: RefuelData, current_user: User
+    ) -> None:
         await self._validate_instance_exists(self.vehicle_repository, vehicle_id)
         await self._validate_user_permissions(
             self.user_repository, current_user.id, UserRoles.EMPLOYEE
@@ -63,21 +67,31 @@ class VehicleService(BaseService):
         vehicle: Vehicle = await self.vehicle_repository.get_vehicle(vehicle_id)
         vehicle_status = await self.vehicle_repository.get_current_status(vehicle_id)
         if vehicle_status in [VehicleStatuses.FUEL, VehicleStatuses.INSPECTION]:
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, "You can't refuel this vehicle at the moment")
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                "You can't refuel this vehicle at the moment",
+            )
 
         if vehicle_status != VehicleStatuses.OFF_SHIFT:
-        # Validate if employee can access the vehicle
+            # Validate if employee can access the vehicle
             current_shift: Shift = await self.shift_repository.get_current_user_shift(
                 current_user.id
             )
             if not current_shift or current_shift.vehicle_id != data.vehicle_id:
                 raise HTTPException(status.HTTP_403_FORBIDDEN, detail="Forbidden")
-        
-        allowed_fuel_amount: float = round(vehicle.max_fuel_lvl - vehicle.current_fuel_lvl)
-        if data.amount > allowed_fuel_amount:
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, f"You can't put that much fuel in. Maximum permissible value is {allowed_fuel_amount}")
 
-        await self.vehicle_repository.set_current_status(vehicle_id, VehicleStatuses.FUEL)
+        allowed_fuel_amount: float = round(
+            vehicle.max_fuel_lvl - vehicle.current_fuel_lvl
+        )
+        if data.amount > allowed_fuel_amount:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                f"You can't put that much fuel in. Maximum permissible value is {allowed_fuel_amount}",
+            )
+
+        await self.vehicle_repository.set_current_status(
+            vehicle_id, VehicleStatuses.FUEL
+        )
         vehicle.current_fuel_lvl += data.amount
         await self.vehicle_repository.save(vehicle)
 
@@ -87,15 +101,15 @@ class VehicleService(BaseService):
             self.user_repository, current_user.id, UserRoles.EMPLOYEE
         )
 
-        vehicle: Vehicle = await self.vehicle_repository.get_vehicle(vehicle_id)
         vehicle_status = await self.vehicle_repository.get_current_status(vehicle_id)
         if vehicle_status != VehicleStatuses.FUEL:
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, "The vehicle is not on a refuel")
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, "The vehicle is not on a refuel"
+            )
 
+        # Set status that was before refueling
         recent_status = await self.vehicle_repository.get_recent_status(vehicle_id)
         await self.vehicle_repository.set_current_status(recent_status)
-        
-        
 
     async def create_vehicle(
         self, data: VehicleBase, current_user: User
@@ -153,9 +167,13 @@ class VehicleService(BaseService):
         if not current_shift or current_shift.vehicle_id != data.vehicle_id:
             raise HTTPException(status.HTTP_403_FORBIDDEN, detail="Forbidden")
 
-        is_vehicle_on_inspection: bool = await self.inspection_repository.is_vehicle_on_inspection(data.vehicle_id)
+        is_vehicle_on_inspection: bool = (
+            await self.inspection_repository.is_vehicle_on_inspection(data.vehicle_id)
+        )
         if is_vehicle_on_inspection:
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, "This vehicle is already on inspection")
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST, "This vehicle is already on inspection"
+            )
 
         inspection: Inspection = await self.inspection_repository.create_inspection(
             data, user_id=current_user.id

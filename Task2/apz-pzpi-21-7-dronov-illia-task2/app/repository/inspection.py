@@ -18,7 +18,7 @@ class InspectionRepository(BaseRepository):
             (Inspection.vehicle_id == vehicle_id) & (Inspection.end_time == None)
         )
         return await self.get_instance(query)
-    
+
     async def is_vehicle_on_inspection(self, vehicle_id: int) -> bool:
         inspection = await self.get_current_inspection(vehicle_id)
         return bool(inspection)

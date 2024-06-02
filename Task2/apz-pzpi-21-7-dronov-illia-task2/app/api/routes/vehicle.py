@@ -35,6 +35,7 @@ async def refuel_vehicle(
 ) -> None:
     await vehicle_service.refuel_vehicle(vehicle_id, data, current_user)
 
+
 @router.post("/refuel/stop/", response_model=None, status_code=201)
 async def refuel_vehicle(
     vehicle_id: int,
