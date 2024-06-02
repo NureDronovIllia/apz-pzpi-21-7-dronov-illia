@@ -24,3 +24,11 @@ class ShiftRepository(BaseRepository):
     async def update_shift(self, shift_id: int, shift_data) -> Shift:
         updated_shift = await self.update(shift_id, shift_data)
         return updated_shift
+
+    async def is_user_on_shift(self, user_id: int) -> bool:
+        query = select(Shift).where(
+            (Shift.user_id == user_id) & (Shift.end_time == None)
+        )
+        shift: Shift = await self.get_instance(query)
+
+        return bool(shift)

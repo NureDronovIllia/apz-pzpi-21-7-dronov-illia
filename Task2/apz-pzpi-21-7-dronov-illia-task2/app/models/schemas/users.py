@@ -73,6 +73,7 @@ class UserLoginInput(BaseModel):
 class UserLoginOutput(BaseModel):
     token: str
 
+
 class NewPasswordInput(BaseModel):
     new_password: str
 

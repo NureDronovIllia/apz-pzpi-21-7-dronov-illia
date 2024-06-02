@@ -54,10 +54,11 @@ class FuelService(BaseService):
         except IntegrityError:
             raise HTTPException(
                 status.HTTP_409_CONFLICT,
-                detail=error_wrapper("Fuel supplier with this title already exists", "title"),
+                detail=error_wrapper(
+                    "Fuel supplier with this title already exists", "title"
+                ),
             )
 
-    
     async def update_supplier(
         self, supplier_id: int, data: SupplierUpdate, current_user: User
     ) -> SupplierData:
@@ -65,16 +66,20 @@ class FuelService(BaseService):
         await self._validate_instance_exists(self.fuel_supplier_repository, supplier_id)
 
         try:
-            updated_supplier: FuelSupplier = await self.fuel_supplier_repository.update_fuel_supplier(
-                supplier_id, data
+            updated_supplier: FuelSupplier = (
+                await self.fuel_supplier_repository.update_fuel_supplier(
+                    supplier_id, data
+                )
             )
             return SupplierData(**updated_supplier.__dict__)
         except IntegrityError:
             raise HTTPException(
                 status.HTTP_409_CONFLICT,
-                detail=error_wrapper("Fuel supplier with this title already exists", "title"),
+                detail=error_wrapper(
+                    "Fuel supplier with this title already exists", "title"
+                ),
             )
-    
+
     async def delete_supplier(self, supplier_id: int, current_user: User) -> None:
         await self._validate_user_permissions(self.user_repository, current_user.id)
         await self._validate_instance_exists(self.fuel_supplier_repository, supplier_id)
@@ -96,18 +101,18 @@ class FuelService(BaseService):
             await self.fuel_storage_repository.create_fuel_storage(data)
         )
         return StorageData(**new_storage.__dict__)
-    
+
     async def update_storage(
         self, storage_id: int, data: StorageUpdate, current_user: User
     ) -> SupplierData:
         await self._validate_user_permissions(self.user_repository, current_user.id)
         await self._validate_instance_exists(self.fuel_storage_repository, storage_id)
 
-        updated_storage: FuelStorage = await self.fuel_storage_repository.update_fuel_storage(
-            storage_id, data
+        updated_storage: FuelStorage = (
+            await self.fuel_storage_repository.update_fuel_storage(storage_id, data)
         )
         return StorageData(**updated_storage.__dict__)
-    
+
     async def delete_storage(self, storage_id: int, current_user: User) -> None:
         await self._validate_user_permissions(self.user_repository, current_user.id)
         await self._validate_instance_exists(self.fuel_storage_repository, storage_id)

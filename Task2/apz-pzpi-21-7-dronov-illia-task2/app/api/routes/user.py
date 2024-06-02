@@ -3,7 +3,13 @@ from fastapi import APIRouter, Depends
 from app.api.dependencies.services import get_user_service
 from app.api.dependencies.user import get_current_user
 from app.models.db.user import User
-from app.models.schemas.users import PasswordChangeInput, PasswordChangeOutput, UserData, UserRegister, UserUpdate
+from app.models.schemas.users import (
+    PasswordChangeInput,
+    PasswordChangeOutput,
+    UserData,
+    UserRegister,
+    UserUpdate,
+)
 from app.services.user import UserService
 
 router = APIRouter(prefix="/users", tags=["Users"])
