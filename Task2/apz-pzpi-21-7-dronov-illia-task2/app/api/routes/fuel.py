@@ -4,6 +4,7 @@ from app.api.dependencies.services import get_fuel_service
 from app.api.dependencies.user import get_current_user
 from app.models.db.user import User
 from app.models.schemas.fuel import (
+    PurchaseBase,
     PurchaseData,
     StorageBase,
     StorageData,
@@ -99,7 +100,7 @@ async def get_purchases(
 
 @router.post("/purchases/", response_model=PurchaseData, status_code=201)
 async def create_purchase(
-    data: None,
+    data: PurchaseBase,
     current_user: User = Depends(get_current_user),
     fuel_service: FuelService = Depends(get_fuel_service),
 ) -> PurchaseData:

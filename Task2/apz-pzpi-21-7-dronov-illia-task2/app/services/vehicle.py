@@ -77,7 +77,7 @@ class VehicleService(BaseService):
             current_shift: Shift = await self.shift_repository.get_current_user_shift(
                 current_user.id
             )
-            if not current_shift or current_shift.vehicle_id != data.vehicle_id:
+            if not current_shift or current_shift.vehicle_id != vehicle_id:
                 raise HTTPException(status.HTTP_403_FORBIDDEN, detail="Forbidden")
 
         allowed_fuel_amount: float = round(
@@ -109,7 +109,7 @@ class VehicleService(BaseService):
 
         # Set status that was before refueling
         recent_status = await self.vehicle_repository.get_recent_status(vehicle_id)
-        await self.vehicle_repository.set_current_status(recent_status)
+        await self.vehicle_repository.set_current_status(vehicle_id, recent_status)
 
     async def create_vehicle(
         self, data: VehicleBase, current_user: User

@@ -28,7 +28,7 @@ class User(Base):
             validate_strings=True,
         )
     )
-    email: Mapped[str] = mapped_column(String(50))
+    email: Mapped[str] = mapped_column(String(50), unique=True)
     password: Mapped[str]
     passport_number: Mapped[str] = mapped_column(String(32))
     registered_at: Mapped[datetime] = mapped_column(default=func.now())

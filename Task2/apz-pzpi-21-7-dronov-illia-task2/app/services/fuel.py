@@ -134,6 +134,10 @@ class FuelService(BaseService):
             data.fuel_storage_id
         )
 
+        fuel_supplier: FuelSupplier = await self.fuel_supplier_repository.get_fuel_supplier(data.fuel_supplier_id)
+        if fuel_supplier.fuel_type != fuel_storage.fuel_type:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "Type of fuel doesn't match for the storage and supplier")
+
         allowed_amount: float = fuel_storage.max_amount - fuel_storage.current_amount
         if data.amount > allowed_amount:
             raise HTTPException(
@@ -141,7 +145,10 @@ class FuelService(BaseService):
                 f"You can't put that much fuel in. Maximum permissible value is {allowed_amount}",
             )
 
+        fuel_storage.current_amount += data.amount
+        await self.fuel_storage_repository.save(fuel_storage)
+        
         new_purchase: Purchase = await self.purchase_repository.create_purchase(
-            PurchaseCreate(**data, user_id=current_user.id)
+            PurchaseCreate(**data.model_dump(), user_id=current_user.id)
         )
         return PurchaseData(**new_purchase.__dict__)

@@ -75,8 +75,9 @@ class UserService(BaseService):
     async def update_user(
         self, user_id: int, user_data: UserUpdate, current_user: User
     ) -> UserData:
-        await self._validate_user_permissions(self.user_repository, current_user.id)
         await self._validate_instance_exists(self.user_repository, user_id)
+        if user_id != current_user.id:
+            raise HTTPException(status.HTTP_403_FORBIDDEN, "Forbidden")
 
         try:
             updated_user: User = await self.user_repository.update_user(
