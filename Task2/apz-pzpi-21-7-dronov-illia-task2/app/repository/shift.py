@@ -13,6 +13,12 @@ class ShiftRepository(BaseRepository):
         query = select(Shift).where(Shift.id == shift_id)
         return await self.get_instance(query)
 
+    async def get_current_user_shift(self, user_id: int) -> Shift:
+        query = select(Shift).where(
+            (Shift.user_id == user_id) & (Shift.end_time == None)
+        )
+        return await self.get_instance(query)
+
     async def get_shifts(self) -> list[Shift]:
         query = select(Shift)
         return self.unpack(await self.get_many(query))
@@ -26,9 +32,5 @@ class ShiftRepository(BaseRepository):
         return updated_shift
 
     async def is_user_on_shift(self, user_id: int) -> bool:
-        query = select(Shift).where(
-            (Shift.user_id == user_id) & (Shift.end_time == None)
-        )
-        shift: Shift = await self.get_instance(query)
-
+        shift: Shift = await self.get_current_user_shift(user_id)
         return bool(shift)

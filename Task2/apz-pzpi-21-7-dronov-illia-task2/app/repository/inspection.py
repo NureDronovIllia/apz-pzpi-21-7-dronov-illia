@@ -9,6 +9,20 @@ from app.repository.base import BaseRepository
 class InspectionRepository(BaseRepository):
     model = Inspection
 
+    async def get_inspection(self, inspection_id: int) -> Inspection:
+        query = select(Inspection).where(Inspection.id == inspection_id)
+        return await self.get_instance(query)
+
+    async def get_current_inspection(self, vehicle_id: int) -> Inspection:
+        query = select(Inspection).where(
+            (Inspection.vehicle_id == vehicle_id) & (Inspection.end_time == None)
+        )
+        return await self.get_instance(query)
+    
+    async def is_vehicle_on_inspection(self, vehicle_id: int) -> bool:
+        inspection = await self.get_current_inspection(vehicle_id)
+        return bool(inspection)
+
     async def get_inspections(self) -> list[Inspection]:
         query = select(Inspection)
         return self.unpack(await self.get_many(query))

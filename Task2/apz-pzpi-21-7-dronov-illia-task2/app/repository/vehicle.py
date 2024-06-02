@@ -10,11 +10,25 @@ from app.repository.base import BaseRepository
 class VehicleRepository(BaseRepository):
     model = Vehicle
 
+    async def get_vehicle(self, vehicle_id: int) -> Vehicle:
+        query = select(Vehicle).where(Vehicle.id == vehicle_id)
+        return await self.get_instance(query)
+
     async def get_vehicles(self) -> list[Vehicle]:
         query = select(Vehicle)
         return self.unpack(await self.get_many(query))
 
-    async def get_current_status(self, vehicle_id: int) -> str:
+    async def get_recent_status(self, vehicle_id: int) -> VehicleStatuses:
+        query = (
+            select(Status.status)
+            .where(Status.vehicle_id == vehicle_id)
+            .order_by(Status.created_at.desc())
+            .limit(2)
+        )
+        statuses: list[VehicleStatuses] = self.unpack(await self.get_many(query))
+        return statuses[1]
+
+    async def get_current_status(self, vehicle_id: int) -> VehicleStatuses:
         query = (
             select(Status.status)
             .where(Status.vehicle_id == vehicle_id)

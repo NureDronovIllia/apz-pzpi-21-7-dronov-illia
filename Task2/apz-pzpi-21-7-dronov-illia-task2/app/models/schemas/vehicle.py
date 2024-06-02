@@ -26,6 +26,10 @@ class SetStatus(BaseModel):
     status: VehicleStatuses
 
 
+class RefuelData(BaseModel):
+    amount: float
+
+
 class VehicleUpdate(BaseModel):
     current_fuel_lvl: Optional[Annotated[float, Ge(0)]] = None
     current_lng: Optional[Annotated[float, Ge(-180), Le(180)]] = None

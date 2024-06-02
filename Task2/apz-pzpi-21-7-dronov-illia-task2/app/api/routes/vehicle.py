@@ -7,6 +7,7 @@ from app.models.schemas.vehicle import (
     InspectionBase,
     InspectionData,
     InspectionUpdate,
+    RefuelData,
     SetStatus,
     VehicleBase,
     VehicleData,
@@ -23,6 +24,24 @@ async def get_vehicles(
     vehicle_service: VehicleService = Depends(get_vehicle_service),
 ) -> list[VehicleData]:
     return await vehicle_service.get_vehicles(current_user)
+
+
+@router.post("/refuel/", response_model=None, status_code=201)
+async def refuel_vehicle(
+    vehicle_id: int,
+    data: RefuelData,
+    current_user: User = Depends(get_current_user),
+    vehicle_service: VehicleService = Depends(get_vehicle_service),
+) -> None:
+    await vehicle_service.refuel_vehicle(vehicle_id, data, current_user)
+
+@router.post("/refuel/stop/", response_model=None, status_code=201)
+async def refuel_vehicle(
+    vehicle_id: int,
+    current_user: User = Depends(get_current_user),
+    vehicle_service: VehicleService = Depends(get_vehicle_service),
+) -> None:
+    await vehicle_service.stop_refuel(vehicle_id, current_user)
 
 
 @router.post("/{vehicle_id}/set_current_status/", response_model=None, status_code=201)
