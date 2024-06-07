@@ -4,9 +4,12 @@ version: '3.8'
 services:
   web:
     build: .
+    # command: >
+    #   sh -c "alembic upgrade head &&
+    #         uvicorn app.main:app --reload --host '0.0.0.0' --ssl-keyfile ./localhost-key.pem --ssl-certfile ./localhost.pem"
     command: >
       sh -c "alembic upgrade head &&
-            uvicorn app.main:app --reload --host '0.0.0.0' --ssl-keyfile ./localhost-key.pem --ssl-certfile ./localhost.pem"
+            uvicorn app.main:app --reload --host '0.0.0.0'"
     volumes:
       - ./app:/code/app
       - ./migrations:/code/migrations

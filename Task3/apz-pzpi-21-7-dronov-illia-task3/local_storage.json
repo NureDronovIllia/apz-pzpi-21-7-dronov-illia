@@ -1,0 +1,6 @@
+{
+    "base_url": "http://localhost:8000",
+    "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjAzNTg3MjYsImlhdCI6MTcxNzc2NjcyNiwic3ViIjoiaW90QGV4YW1wbGUuY29tIiwiaWQiOjE4fQ.9_xn15gMKds0Ciwpz9lSvK30KVC-cD-K957MrXbvj5g",
+    "device_email": "iot@example.com",
+    "device_password": "string123"
+}
