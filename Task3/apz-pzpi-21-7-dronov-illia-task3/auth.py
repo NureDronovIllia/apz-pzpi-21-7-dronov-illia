@@ -22,4 +22,3 @@ def authenticate_iot(force: bool = False) -> None:
             set_jwt(jwt)
         except requests.ConnectionError as e:
             print("Error while authenticating the device")
-            print(e)
