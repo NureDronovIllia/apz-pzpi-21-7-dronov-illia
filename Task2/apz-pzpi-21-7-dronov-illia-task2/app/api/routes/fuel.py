@@ -78,7 +78,7 @@ async def update_storage(
     current_user: User = Depends(get_current_user),
     fuel_service: FuelService = Depends(get_fuel_service),
 ) -> StorageData:
-    return await fuel_service.update_storage(data, storage_id, current_user)
+    return await fuel_service.update_storage(storage_id, data, current_user)
 
 
 @router.delete("/storages/{storage_id}/delete/", response_model=None, status_code=204)
